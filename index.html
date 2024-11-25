@@ -17,8 +17,6 @@
 
     <div class="container">
         <div class="upload-container">
-            <input type="text" id="apiKey" class="api-key-input" placeholder="Enter your OpenAI API key" />
-            
             <div class="drop-zone" id="dropZone">
                 <div class="drop-zone-text">
                     <p>Drag meme images here</p>
@@ -34,6 +32,22 @@
         <div id="loading" class="loading"></div>
         <div id="error" class="error"></div>
         <div id="response" class="response-container markdown-content"></div>
+    </div>
+
+    <div class="settings-button" id="settingsButton">⚙️</div>
+
+    <div class="settings-popup" id="settingsPopup">
+        <div class="settings-content">
+            <h2>Settings</h2>
+            <div class="settings-form">
+                <label for="apiKeyInput">OpenAI API Key</label>
+                <input type="password" id="apiKeyInput" class="api-key-input" placeholder="Enter your OpenAI API key" />
+                <div class="settings-buttons">
+                    <button id="saveSettings" class="save-button">Save</button>
+                    <button id="closeSettings" class="close-button">Close</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script src="script.js"></script>

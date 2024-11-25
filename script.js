@@ -1,13 +1,49 @@
 const dropZone = document.getElementById('dropZone');
 const fileInput = document.getElementById('fileInput');
 const previewContainer = document.getElementById('previewContainer');
-const apiKeyInput = document.getElementById('apiKey');
+const apiKeyInput = document.getElementById('apiKeyInput');
 const analyzeButton = document.getElementById('analyzeButton');
 const loadingDiv = document.getElementById('loading');
 const errorDiv = document.getElementById('error');
 const responseDiv = document.getElementById('response');
+const settingsButton = document.getElementById('settingsButton');
+const settingsPopup = document.getElementById('settingsPopup');
+const saveSettingsButton = document.getElementById('saveSettings');
+const closeSettingsButton = document.getElementById('closeSettings');
 
 let selectedFiles = [];
+
+// Load API key from localStorage on page load
+document.addEventListener('DOMContentLoaded', () => {
+    const savedApiKey = localStorage.getItem('openaiApiKey');
+    if (savedApiKey) {
+        apiKeyInput.value = savedApiKey;
+    }
+    updateAnalyzeButton();
+});
+
+// Settings popup handlers
+settingsButton.addEventListener('click', () => {
+    settingsPopup.classList.add('active');
+});
+
+closeSettingsButton.addEventListener('click', () => {
+    settingsPopup.classList.remove('active');
+});
+
+// Save settings and update button state
+saveSettingsButton.addEventListener('click', () => {
+    localStorage.setItem('openaiApiKey', apiKeyInput.value.trim());
+    settingsPopup.classList.remove('active');
+    updateAnalyzeButton();
+});
+
+// Close popup when clicking outside
+settingsPopup.addEventListener('click', (e) => {
+    if (e.target === settingsPopup) {
+        settingsPopup.classList.remove('active');
+    }
+});
 
 ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
     dropZone.addEventListener(eventName, preventDefaults, false);
@@ -84,14 +120,14 @@ function addPreviewImage(file) {
     reader.readAsDataURL(file);
 }
 
-apiKeyInput.addEventListener('input', updateAnalyzeButton);
-
 function updateAnalyzeButton() {
-    analyzeButton.disabled = selectedFiles.length === 0 || !apiKeyInput.value.trim();
+    const apiKey = localStorage.getItem('openaiApiKey');
+    analyzeButton.disabled = selectedFiles.length === 0 || !apiKey;
 }
 
 analyzeButton.addEventListener('click', async () => {
-    if (selectedFiles.length === 0 || !apiKeyInput.value.trim()) return;
+    const apiKey = localStorage.getItem('openaiApiKey');
+    if (selectedFiles.length === 0 || !apiKey) return;
 
     errorDiv.style.display = 'none';
     responseDiv.style.display = 'none';
@@ -118,7 +154,7 @@ analyzeButton.addEventListener('click', async () => {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${apiKeyInput.value.trim()}`
+                'Authorization': `Bearer ${apiKey}`
             },
             body: JSON.stringify({
                 model: "gpt-4o-mini",
