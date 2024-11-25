@@ -2,6 +2,7 @@ const dropZone = document.getElementById('dropZone');
 const fileInput = document.getElementById('fileInput');
 const previewContainer = document.getElementById('previewContainer');
 const apiKeyInput = document.getElementById('apiKeyInput');
+const promptSelect = document.getElementById('promptSelect');
 const analyzeButton = document.getElementById('analyzeButton');
 const loadingDiv = document.getElementById('loading');
 const errorDiv = document.getElementById('error');
@@ -14,18 +15,27 @@ const additionalContext = document.getElementById('additionalContext');
 
 let selectedFiles = [];
 
+const prompts = {
+    detailed: "Explain this meme for someone unfamiliar with [American/Western/specific] culture: Break down all the visual elements present. (If there is a sequence or dialogue in the image, write it down in order.) What makes it funny? Any similar memes or trends it relates to? Any cultural references or context?",
+    simple: "Explain this meme: What's happening in the image? Why is it funny?"
+};
+
 // Auto-resize textarea
 additionalContext.addEventListener('input', function() {
     this.style.height = 'auto';
     this.style.height = (this.scrollHeight) + 'px';
 });
 
-// Load API key from localStorage on page load
+// Load settings from localStorage on page load
 document.addEventListener('DOMContentLoaded', () => {
     const savedApiKey = localStorage.getItem('openaiApiKey');
+    const savedPromptStyle = localStorage.getItem('promptStyle') || 'detailed';
+    
     if (savedApiKey) {
         apiKeyInput.value = savedApiKey;
     }
+    
+    promptSelect.value = savedPromptStyle;
     updateAnalyzeButton();
 });
 
@@ -41,6 +51,7 @@ closeSettingsButton.addEventListener('click', () => {
 // Save settings and update button state
 saveSettingsButton.addEventListener('click', () => {
     localStorage.setItem('openaiApiKey', apiKeyInput.value.trim());
+    localStorage.setItem('promptStyle', promptSelect.value);
     settingsPopup.classList.remove('active');
     updateAnalyzeButton();
 });
@@ -158,7 +169,8 @@ analyzeButton.addEventListener('click', async () => {
         }));
 
         const contextText = additionalContext.value.trim();
-        const promptText = "Explain this meme for someone unfamiliar with [American/Western/specific] culture: Break down all the visual elements present. (If there is a sequence or dialogue in the image, write it down in order.) What makes it funny? Any similar memes or trends it relates to? Any cultural references or context?" +
+        const selectedPrompt = prompts[promptSelect.value];
+        const promptText = selectedPrompt + 
             (contextText ? `\n\nAdditional context provided: ${contextText}` : "") +
             "\nNote 1:  Don't respond with Certainly! or Sure. Just start writing the main text.\nNote 2: Don't use Markdown formatting.\nNote 3: Use a casual and informal tone.";
 

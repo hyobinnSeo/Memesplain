@@ -43,6 +43,13 @@
             <div class="settings-form">
                 <label for="apiKeyInput">OpenAI API Key</label>
                 <input type="password" id="apiKeyInput" class="api-key-input" placeholder="Enter your OpenAI API key" />
+                
+                <label for="promptSelect">Prompt Style</label>
+                <select id="promptSelect" class="prompt-select">
+                    <option value="detailed">Detailed Analysis</option>
+                    <option value="simple">Simple Version</option>
+                </select>
+
                 <div class="settings-buttons">
                     <button id="saveSettings" class="save-button">Save</button>
                     <button id="closeSettings" class="close-button">Close</button>

@@ -74,7 +74,7 @@ body {
     margin-bottom: 2rem;
 }
 
-.api-key-input {
+.api-key-input, .prompt-select {
     width: 100%;
     padding: 0.75rem 1rem;
     border: 1px solid var(--gray-300);
@@ -85,10 +85,20 @@ body {
     transition: border-color 0.2s ease;
 }
 
-.api-key-input:focus {
+.api-key-input:focus, .prompt-select:focus {
     outline: none;
     border-color: var(--navy-400);
     box-shadow: 0 0 0 3px rgba(130, 154, 177, 0.1);
+}
+
+.prompt-select {
+    background-color: white;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23475569' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    padding-right: 2.5rem;
 }
 
 .additional-context {
