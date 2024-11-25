@@ -1,0 +1,13 @@
+{
+  "name": "memesplain",
+  "version": "1.0.0",
+  "description": "AI-powered meme explanation app using GPT-4o",
+  "main": "script.js",
+  "scripts": {
+    "start": "serve -s .",
+    "deploy": "gcloud app deploy"
+  },
+  "dependencies": {
+    "serve": "^14.2.1"
+  }
+}

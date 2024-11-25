@@ -281,22 +281,26 @@ body {
     position: fixed;
     bottom: 20px;
     right: 20px;
-    width: 48px;
-    height: 48px;
-    background-color: white;
-    border-radius: 50%;
+    width: 90px;
+    height: 40px;
+    background-color: var(--navy-600);
+    border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    font-size: 24px;
     transition: transform 0.2s ease;
+    color: white;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 500;
+    font-family: inherit;
     z-index: 100;
 }
 
 .settings-button:hover {
-    transform: scale(1.1);
+    background-color: var(--navy-700);
 }
 
 /* Settings Popup */
