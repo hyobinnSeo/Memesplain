@@ -40,7 +40,7 @@ body {
 
 .header {
     background-color: white;
-    padding: 1.5rem 0;
+    padding: 0.5rem 0;
     border-bottom: 1px solid var(--gray-200);
     text-align: center;
     margin-bottom: 2rem;
@@ -278,12 +278,9 @@ body {
 
 /* Settings Button */
 .settings-button {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
     width: 90px;
     height: 40px;
-    background-color: var(--navy-600);
+    background-color: var(--gray-500);
     border-radius: 8px;
     display: flex;
     align-items: center;
@@ -296,11 +293,11 @@ body {
     font-size: 1rem;
     font-weight: 500;
     font-family: inherit;
-    z-index: 100;
+    margin: 20px 20px 20px auto;
 }
 
 .settings-button:hover {
-    background-color: var(--navy-700);
+    background-color: var(--gray-600);
 }
 
 /* Settings Popup */
