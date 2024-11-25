@@ -10,8 +10,15 @@ const settingsButton = document.getElementById('settingsButton');
 const settingsPopup = document.getElementById('settingsPopup');
 const saveSettingsButton = document.getElementById('saveSettings');
 const closeSettingsButton = document.getElementById('closeSettings');
+const additionalContext = document.getElementById('additionalContext');
 
 let selectedFiles = [];
+
+// Auto-resize textarea
+additionalContext.addEventListener('input', function() {
+    this.style.height = 'auto';
+    this.style.height = (this.scrollHeight) + 'px';
+});
 
 // Load API key from localStorage on page load
 document.addEventListener('DOMContentLoaded', () => {
@@ -150,6 +157,11 @@ analyzeButton.addEventListener('click', async () => {
             };
         }));
 
+        const contextText = additionalContext.value.trim();
+        const promptText = "Explain this meme for someone unfamiliar with [American/Western/specific] culture: Break down all the visual elements present. (If there is a sequence or dialogue in the image, write it down in order.) What makes it funny? Any similar memes or trends it relates to? Any cultural references or context?" +
+            (contextText ? `\n\nAdditional context provided: ${contextText}` : "") +
+            "\nNote 1:  Don't respond with Certainly! or Sure. Just start writing the main text.\nNote 2: Don't use Markdown formatting.\nNote 3: Use a casual and informal tone.";
+
         const response = await fetch('https://api.openai.com/v1/chat/completions', {
             method: 'POST',
             headers: {
@@ -164,7 +176,7 @@ analyzeButton.addEventListener('click', async () => {
                         content: [
                             {
                                 type: "text",
-                                text: "Explain this meme for someone unfamiliar with [American/Western/specific] culture: Break down all the visual elements present. (If there is a sequence or dialogue in the image, write it down in order.) What makes it funny? Any similar memes or trends it relates to? Any cultural references or context?\nNote 1:  Don't respond with Certainly! or Sure. Just start writing the main text.\nNote 2: Don't use Markdown formatting.\nNote 3: Use a casual and informal tone."
+                                text: promptText
                             },
                             ...imageContents
                         ]
