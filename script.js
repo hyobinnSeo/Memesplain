@@ -175,19 +175,17 @@ function addPreviewImage(file) {
 
 function updateAnalyzeButton() {
     const apiKey = localStorage.getItem('openaiApiKey');
-    analyzeButton.disabled = selectedFiles.length === 0 || !apiKey;
+    if (selectedFiles.length === 0 || !apiKey) {
+        analyzeButton.disabled = true;
+        analyzeButton.textContent = 'Analyze Memes';
+    } else if (isRequestInProgress) {
+        analyzeButton.disabled = false;
+        analyzeButton.textContent = 'Cancel Analysis';
+    } else {
+        analyzeButton.disabled = false;
+        analyzeButton.textContent = 'Analyze Memes';
+    }
 }
-
-// Create a div for the cancel text
-const cancelText = document.createElement('div');
-cancelText.id = 'cancelText';
-cancelText.textContent = 'Tap again to cancel';
-cancelText.style.display = 'none';
-cancelText.style.textAlign = 'center';
-cancelText.style.marginTop = '8px';
-cancelText.style.fontSize = '14px';
-cancelText.style.color = '#666';
-analyzeButton.parentNode.insertBefore(cancelText, analyzeButton.nextSibling);
 
 analyzeButton.addEventListener('click', async () => {
     const apiKey = localStorage.getItem('openaiApiKey');
@@ -199,16 +197,15 @@ analyzeButton.addEventListener('click', async () => {
         currentController = null;
         isRequestInProgress = false;
         loadingDiv.style.display = 'none';
-        cancelText.style.display = 'none';
-        analyzeButton.disabled = false;
+        updateAnalyzeButton();
         return;
     }
 
     errorDiv.style.display = 'none';
     responseDiv.style.display = 'none';
     loadingDiv.style.display = 'flex';
-    cancelText.style.display = 'block';
     isRequestInProgress = true;
+    updateAnalyzeButton();
 
     try {
         currentController = new AbortController();
@@ -279,9 +276,8 @@ analyzeButton.addEventListener('click', async () => {
         errorDiv.style.display = 'block';
     } finally {
         loadingDiv.style.display = 'none';
-        cancelText.style.display = 'none';
         currentController = null;
         isRequestInProgress = false;
-        analyzeButton.disabled = false;
+        updateAnalyzeButton();
     }
 });
