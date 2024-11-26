@@ -3,6 +3,7 @@ const fileInput = document.getElementById('fileInput');
 const previewContainer = document.getElementById('previewContainer');
 const apiKeyInput = document.getElementById('apiKeyInput');
 const promptSelect = document.getElementById('promptSelect');
+const promptText = document.getElementById('promptText');
 const analyzeButton = document.getElementById('analyzeButton');
 const loadingDiv = document.getElementById('loading');
 const errorDiv = document.getElementById('error');
@@ -15,11 +16,13 @@ const additionalContext = document.getElementById('additionalContext');
 
 let selectedFiles = [];
 
-const prompts = {
+const defaultPrompts = {
     simple: "Explain this meme: What's happening in the image? Why is it funny?",
     detailed: "Explain this meme for someone unfamiliar with [American/Western/specific] culture: Break down all the visual elements present. (If there is a sequence or dialogue in the image, write it down in order.) What makes it funny? Any similar memes or trends it relates to? Any cultural references or context?",
     korean: "이 밈을 설명해주세요: 이미지에서 무슨 일이 일어나고 있나요? 왜 재미있는건가요?"
 };
+
+let prompts = { ...defaultPrompts };
 
 const notePrompt = "\nNote 1:  Don't respond with Certainly! or Sure. Just start writing the main text.\nNote 2: Don't use Markdown formatting.\nNote 3: Use a casual and informal tone.";
 
@@ -33,9 +36,14 @@ additionalContext.addEventListener('input', function() {
 document.addEventListener('DOMContentLoaded', () => {
     const savedApiKey = localStorage.getItem('openaiApiKey');
     const savedPromptStyle = localStorage.getItem('promptStyle') || 'simple';
+    const savedPrompts = localStorage.getItem('customPrompts');
     
     if (savedApiKey) {
         apiKeyInput.value = savedApiKey;
+    }
+    
+    if (savedPrompts) {
+        prompts = { ...defaultPrompts, ...JSON.parse(savedPrompts) };
     }
     
     promptSelect.value = savedPromptStyle;
@@ -45,16 +53,26 @@ document.addEventListener('DOMContentLoaded', () => {
 // Settings popup handlers
 settingsButton.addEventListener('click', () => {
     settingsPopup.classList.add('active');
+    promptText.value = prompts[promptSelect.value] || defaultPrompts[promptSelect.value];
 });
 
 closeSettingsButton.addEventListener('click', () => {
     settingsPopup.classList.remove('active');
 });
 
+promptSelect.addEventListener('change', () => {
+    promptText.value = prompts[promptSelect.value] || defaultPrompts[promptSelect.value];
+});
+
 // Save settings and update button state
 saveSettingsButton.addEventListener('click', () => {
     localStorage.setItem('openaiApiKey', apiKeyInput.value.trim());
     localStorage.setItem('promptStyle', promptSelect.value);
+    
+    // Save custom prompt
+    prompts[promptSelect.value] = promptText.value.trim();
+    localStorage.setItem('customPrompts', JSON.stringify(prompts));
+    
     settingsPopup.classList.remove('active');
     updateAnalyzeButton();
 });
@@ -172,7 +190,7 @@ analyzeButton.addEventListener('click', async () => {
         }));
 
         const contextText = additionalContext.value.trim();
-        const selectedPrompt = prompts[promptSelect.value];
+        const selectedPrompt = prompts[promptSelect.value] || defaultPrompts[promptSelect.value];
         const promptText = selectedPrompt + 
             (contextText ? `\n\nAdditional context provided: ${contextText}` : "") +
             notePrompt;

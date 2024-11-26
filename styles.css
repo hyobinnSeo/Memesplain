@@ -101,6 +101,25 @@ body {
     padding-right: 2.5rem;
 }
 
+.prompt-text {
+    width: 100%;
+    min-height: 100px;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--gray-300);
+    border-radius: 8px;
+    font-size: 0.875rem;
+    margin-bottom: 1rem;
+    font-family: inherit;
+    transition: border-color 0.2s ease;
+    resize: vertical;
+}
+
+.prompt-text:focus {
+    outline: none;
+    border-color: var(--navy-400);
+    box-shadow: 0 0 0 3px rgba(130, 154, 177, 0.1);
+}
+
 .additional-context {
     width: 100%;
     min-height: 40px;
