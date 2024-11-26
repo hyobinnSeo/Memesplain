@@ -4,6 +4,7 @@ const previewContainer = document.getElementById('previewContainer');
 const apiKeyInput = document.getElementById('apiKeyInput');
 const promptSelect = document.getElementById('promptSelect');
 const promptText = document.getElementById('promptText');
+const notePromptText = document.getElementById('notePromptText');
 const analyzeButton = document.getElementById('analyzeButton');
 const loadingDiv = document.getElementById('loading');
 const errorDiv = document.getElementById('error');
@@ -22,9 +23,10 @@ const defaultPrompts = {
     korean: "이 밈을 설명해주세요: 이미지에서 무슨 일이 일어나고 있나요? 왜 재미있는건가요?"
 };
 
-let prompts = { ...defaultPrompts };
+const defaultNotePrompt = "\nNote 1:  Don't respond with Certainly! or Sure. Just start writing the main text.\nNote 2: Don't use Markdown formatting.\nNote 3: Use a casual and informal tone.";
 
-const notePrompt = "\nNote 1:  Don't respond with Certainly! or Sure. Just start writing the main text.\nNote 2: Don't use Markdown formatting.\nNote 3: Use a casual and informal tone.";
+let prompts = { ...defaultPrompts };
+let notePrompt = defaultNotePrompt;
 
 // Auto-resize textarea
 additionalContext.addEventListener('input', function() {
@@ -37,6 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const savedApiKey = localStorage.getItem('openaiApiKey');
     const savedPromptStyle = localStorage.getItem('promptStyle') || 'simple';
     const savedPrompts = localStorage.getItem('customPrompts');
+    const savedNotePrompt = localStorage.getItem('notePrompt');
     
     if (savedApiKey) {
         apiKeyInput.value = savedApiKey;
@@ -44,6 +47,10 @@ document.addEventListener('DOMContentLoaded', () => {
     
     if (savedPrompts) {
         prompts = { ...defaultPrompts, ...JSON.parse(savedPrompts) };
+    }
+
+    if (savedNotePrompt) {
+        notePrompt = savedNotePrompt;
     }
     
     promptSelect.value = savedPromptStyle;
@@ -54,6 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
 settingsButton.addEventListener('click', () => {
     settingsPopup.classList.add('active');
     promptText.value = prompts[promptSelect.value] || defaultPrompts[promptSelect.value];
+    notePromptText.value = notePrompt;
 });
 
 closeSettingsButton.addEventListener('click', () => {
@@ -72,6 +80,10 @@ saveSettingsButton.addEventListener('click', () => {
     // Save custom prompt
     prompts[promptSelect.value] = promptText.value.trim();
     localStorage.setItem('customPrompts', JSON.stringify(prompts));
+
+    // Save note prompt
+    notePrompt = notePromptText.value.trim();
+    localStorage.setItem('notePrompt', notePrompt);
     
     settingsPopup.classList.remove('active');
     updateAnalyzeButton();
