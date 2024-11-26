@@ -21,6 +21,8 @@ const prompts = {
     korean: "이 밈을 설명해주세요: 이미지에서 무슨 일이 일어나고 있나요? 왜 재미있는건가요?"
 };
 
+const notePrompt = "\nNote 1:  Don't respond with Certainly! or Sure. Just start writing the main text.\nNote 2: Don't use Markdown formatting.\nNote 3: Use a casual and informal tone.";
+
 // Auto-resize textarea
 additionalContext.addEventListener('input', function() {
     this.style.height = 'auto';
@@ -173,7 +175,7 @@ analyzeButton.addEventListener('click', async () => {
         const selectedPrompt = prompts[promptSelect.value];
         const promptText = selectedPrompt + 
             (contextText ? `\n\nAdditional context provided: ${contextText}` : "") +
-            "\nNote 1:  Don't respond with Certainly! or Sure. Just start writing the main text.\nNote 2: Don't use Markdown formatting.\nNote 3: Use a casual and informal tone.";
+            notePrompt;
 
         const response = await fetch('https://api.openai.com/v1/chat/completions', {
             method: 'POST',
