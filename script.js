@@ -16,6 +16,8 @@ const closeSettingsButton = document.getElementById('closeSettings');
 const additionalContext = document.getElementById('additionalContext');
 
 let selectedFiles = [];
+let currentController = null;
+let isRequestInProgress = false;
 
 const defaultPrompts = {
     simple: "Explain this meme: What's happening in the image? Why is it funny?",
@@ -176,16 +178,42 @@ function updateAnalyzeButton() {
     analyzeButton.disabled = selectedFiles.length === 0 || !apiKey;
 }
 
+// Create a div for the cancel text
+const cancelText = document.createElement('div');
+cancelText.id = 'cancelText';
+cancelText.textContent = 'Tap again to cancel';
+cancelText.style.display = 'none';
+cancelText.style.textAlign = 'center';
+cancelText.style.marginTop = '8px';
+cancelText.style.fontSize = '14px';
+cancelText.style.color = '#666';
+analyzeButton.parentNode.insertBefore(cancelText, analyzeButton.nextSibling);
+
 analyzeButton.addEventListener('click', async () => {
     const apiKey = localStorage.getItem('openaiApiKey');
     if (selectedFiles.length === 0 || !apiKey) return;
 
+    // If there's an ongoing request, cancel it
+    if (isRequestInProgress && currentController) {
+        currentController.abort();
+        currentController = null;
+        isRequestInProgress = false;
+        loadingDiv.style.display = 'none';
+        cancelText.style.display = 'none';
+        analyzeButton.disabled = false;
+        return;
+    }
+
     errorDiv.style.display = 'none';
     responseDiv.style.display = 'none';
     loadingDiv.style.display = 'flex';
-    analyzeButton.disabled = true;
+    cancelText.style.display = 'block';
+    isRequestInProgress = true;
 
     try {
+        currentController = new AbortController();
+        const signal = currentController.signal;
+
         const imageContents = await Promise.all(selectedFiles.map(async file => {
             const base64Image = await new Promise((resolve) => {
                 const reader = new FileReader();
@@ -228,7 +256,8 @@ analyzeButton.addEventListener('click', async () => {
                     }
                 ],
                 max_tokens: 500
-            })
+            }),
+            signal
         });
 
         const data = await response.json();
@@ -242,10 +271,17 @@ analyzeButton.addEventListener('click', async () => {
         responseDiv.innerHTML = DOMPurify.sanitize(parsedContent);
         responseDiv.style.display = 'block';
     } catch (error) {
-        errorDiv.textContent = error.message;
+        if (error.name === 'AbortError') {
+            errorDiv.textContent = 'Request cancelled';
+        } else {
+            errorDiv.textContent = error.message;
+        }
         errorDiv.style.display = 'block';
     } finally {
         loadingDiv.style.display = 'none';
+        cancelText.style.display = 'none';
+        currentController = null;
+        isRequestInProgress = false;
         analyzeButton.disabled = false;
     }
 });
