@@ -20,9 +20,9 @@ let currentController = null;
 let isRequestInProgress = false;
 
 const defaultPrompts = {
-    simple: "Explain this meme: What's happening in the image? Why is it funny?",
+    simple: "Explain this meme: What's happening in the image?",
     detailed: "Explain this meme for someone unfamiliar with [American/Western/specific] culture: Break down all the visual elements present. (If there is a sequence or dialogue in the image, write it down in order.) What makes it funny? Any similar memes or trends it relates to? Any cultural references or context?",
-    korean: "이 밈을 설명해주세요: 이미지에서 무슨 일이 일어나고 있나요? 왜 재미있는건가요?"
+    korean: "이 밈을 설명해주세요: 이미지에서 무슨 일이 일어나고 있나요?"
 };
 
 const defaultNotePrompt = "\nNote 1:  Don't respond with Certainly! or Sure. Just start writing the main text.\nNote 2: Don't use Markdown formatting.\nNote 3: Use a casual and informal tone.";
